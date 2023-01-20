@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1024671615556",
+    "project_id": "womanista-135a3",
+    "storage_bucket": "womanista-135a3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1024671615556:android:223bac193970e53bd6ca11",
+        "android_client_info": {
+          "package_name": "com.womanista"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1024671615556-qena78q3hr8cquo7cib43opqomd1gmsv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSb-Q15Y7R49ZTKYx18aeHSzpsKZF_m-E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1024671615556-qena78q3hr8cquo7cib43opqomd1gmsv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

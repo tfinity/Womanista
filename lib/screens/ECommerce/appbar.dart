@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:womanista/screens/ECommerce/cart/cartPage.dart';
+import 'package:womanista/variables/variables.dart';
 
 class Appbar extends StatelessWidget {
   const Appbar({Key? key}) : super(key: key);
@@ -18,13 +19,16 @@ class Appbar extends StatelessWidget {
         ),
         Text(
           "Buy Products",
-          style: GoogleFonts.ptSerif(
-            fontSize: height * 0.03,
-            fontWeight: FontWeight.bold,
-          ),
+          style: AppSettings.textStyle(
+              size: height * 0.03,
+              weight: FontWeight.bold,
+              textColor: AppSettings.mainColor),
         ),
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const CartPage()));
+          },
           icon: FaIcon(FontAwesomeIcons.cartShopping, size: height * 0.04),
         ),
       ],

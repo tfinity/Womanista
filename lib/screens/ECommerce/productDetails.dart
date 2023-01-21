@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:womanista/screens/ECommerce/ProductClass.dart';
+import 'package:womanista/screens/ECommerce/cart/cartPage.dart';
+import 'package:womanista/screens/ECommerce/cart/cart_provider.dart';
+import 'package:womanista/variables/variables.dart';
 
 class ProductDetails extends StatefulWidget {
   const ProductDetails({Key? key, required this.product}) : super(key: key);
@@ -37,15 +42,21 @@ class _ProductDetailsState extends State<ProductDetails> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
                         icon: const Icon(
                           Icons.arrow_back,
                         ),
                       ),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          isFavourite = !isFavourite;
+                          setState(() {});
+                        },
                         icon: Icon(
                           isFavourite ? Icons.favorite : Icons.favorite_border,
+                          color: AppSettings.mainColor,
                         ),
                       ),
                     ],
@@ -54,11 +65,75 @@ class _ProductDetailsState extends State<ProductDetails> {
                 ],
               ),
             ),
-            Row(
-              children: [
-                Text(widget.product.name!),
-                Text("\$ ${widget.product.price!}"),
-              ],
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    widget.product.name!,
+                    style: AppSettings.textStyle(
+                      size: 20,
+                      weight: FontWeight.bold,
+                      textColor: AppSettings.mainColor,
+                    ),
+                  ),
+                  Text(
+                    "\$ ${widget.product.price!}",
+                    style: AppSettings.textStyle(size: 20),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  widget.product.description!,
+                  style: AppSettings.textStyle(
+                      size: 16, weight: FontWeight.normal),
+                ),
+              ),
+            ),
+            //Add to cart
+            ElevatedButton(
+              onPressed: () {
+                context.read<Cart>().add(CartItem(
+                      name: widget.product.name,
+                      count: 1,
+                      des: widget.product.description,
+                      img: widget.product.img,
+                      price: widget.product.price,
+                    ));
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const CartPage(),
+                  ),
+                );
+              },
+              child: const FaIcon(
+                FontAwesomeIcons.cartPlus,
+              ),
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all(AppSettings.mainColor),
+                padding: MaterialStateProperty.all(
+                  const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 10,
+                  ),
+                ),
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10))),
+              ),
+            ),
+            // Text(
+            //   "+ Add to Cart",
+            //   style: AppSettings.textStyle(size: 20),
+            // ),
+            SizedBox(
+              height: height * 0.01,
             ),
           ],
         ),

@@ -4,10 +4,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:womanista/firebase_options.dart';
-import 'package:womanista/screens/ECommerce/cart/cart_provider.dart';
+import 'package:womanista/screens/modules/ECommerce/cart/cart_provider.dart';
 import 'package:womanista/screens/Home.dart';
 import 'package:womanista/screens/login.dart';
 import 'package:provider/provider.dart';
+import 'package:womanista/screens/modules/RideBooking/DriverSide/ride_requests_provider.dart';
+import 'package:womanista/screens/modules/RideBooking/chat_provider.dart';
+import 'package:womanista/screens/modules/RideBooking/place_service.dart';
+import 'package:womanista/screens/modules/RideBooking/rides_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +20,11 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => Cart()),
-        //ChangeNotifierProvider(create: (_) => CartItem()),
+        ChangeNotifierProvider(create: (_) => RideProvider()),
+        ChangeNotifierProvider(create: (_) => PickupLocation()),
+        ChangeNotifierProvider(create: (_) => DestinationLocation()),
+        ChangeNotifierProvider(create: (_) => ChatProvider()),
+        ChangeNotifierProvider(create: (_) => RequestProvider()),
       ],
       child: MyApp(),
     ),

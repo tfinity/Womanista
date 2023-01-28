@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:womanista/screens/ECommerce/cart/cartPage.dart';
+import 'package:womanista/screens/modules/ECommerce/cart/cartPage.dart';
 import 'package:womanista/variables/variables.dart';
 
 class Appbar extends StatelessWidget {
@@ -14,7 +14,9 @@ class Appbar extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
           icon: Icon(Icons.arrow_back, size: height * 0.04),
         ),
         Text(

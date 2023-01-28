@@ -41,6 +41,12 @@ dependencies:
   youtube_player_flutter: ^8.1.1
   cached_network_image: ^3.2.1
   provider: ^6.0.5
+  animated_text_kit: ^4.2.2
+  google_maps_flutter: ^2.2.3
+  permission_handler: ^10.2.0
+  http: ^0.13.5
+  uuid: ^3.0.7
+  location: ^4.4.0
 
 dev_dependencies:
   flutter_test:

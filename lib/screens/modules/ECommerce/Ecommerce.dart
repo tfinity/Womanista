@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:womanista/screens/ECommerce/Products.dart';
-import 'package:womanista/screens/ECommerce/appbar.dart';
+import 'package:womanista/screens/modules/ECommerce/Products.dart';
+import 'package:womanista/screens/modules/ECommerce/appbar.dart';
 
 class Ecommerce extends StatefulWidget {
   const Ecommerce({Key? key}) : super(key: key);

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:womanista/screens/ECommerce/cart/cart_provider.dart';
+import 'package:womanista/screens/modules/ECommerce/cart/cart_provider.dart';
 import 'package:womanista/screens/Home.dart';
 import 'package:womanista/variables/variables.dart';
 
@@ -43,6 +43,7 @@ class _OrderCompletePageState extends State<OrderCompletePage> {
                   Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(builder: (context) => const Home()),
                       (route) => false);
+                  context.read<Cart>().resetPage();
                 },
                 child: Text(
                   "Go to Home",

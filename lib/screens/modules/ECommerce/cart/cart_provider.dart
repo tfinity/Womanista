@@ -1,5 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
-import 'package:womanista/screens/ECommerce/ProductClass.dart';
+import 'package:womanista/screens/modules/ECommerce/ProductClass.dart';
 
 class Cart with ChangeNotifier {
   List<CartItem> products = [];
@@ -16,12 +18,19 @@ class Cart with ChangeNotifier {
   }
 
   add(CartItem p) {
-    products.add(p);
+    if (products.any((element) => element.id == p.id)) {
+      log("true part");
+      products.firstWhere((element) => element.id == p.id).count++;
+    } else {
+      log("else part");
+      products.add(p);
+    }
+
     notifyListeners();
   }
 
   remove(Product p) {
-    products.removeWhere((element) => element == p);
+    products.removeWhere((element) => element.id == p.id);
 
     notifyListeners();
   }
@@ -33,6 +42,11 @@ class Cart with ChangeNotifier {
 
   decrementPage() {
     cartPageIndex--;
+    notifyListeners();
+  }
+
+  resetPage() {
+    cartPageIndex = 0;
     notifyListeners();
   }
 
@@ -52,7 +66,7 @@ class Cart with ChangeNotifier {
 }
 
 class CartItem extends Product {
-  CartItem({name, img, des, price, this.count = 0})
-      : super(name: name, description: des, img: img, price: price);
+  CartItem({id, name, img, des, price, this.count = 0})
+      : super(id: id, name: name, description: des, img: img, price: price);
   int count;
 }

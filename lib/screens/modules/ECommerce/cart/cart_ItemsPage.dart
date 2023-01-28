@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:womanista/screens/ECommerce/cart/cart_items_list_view.dart';
-import 'package:womanista/screens/ECommerce/cart/cart_provider.dart';
+import 'package:womanista/screens/modules/ECommerce/cart/cartPage.dart';
+import 'package:womanista/screens/modules/ECommerce/cart/cart_items_list_view.dart';
+import 'package:womanista/screens/modules/ECommerce/cart/cart_provider.dart';
 import 'package:womanista/variables/variables.dart';
 
 class CartItemsPage extends StatefulWidget {
-  const CartItemsPage({Key? key}) : super(key: key);
+  const CartItemsPage({Key? key, required this.id}) : super(key: key);
+  final int id;
 
   @override
   State<CartItemsPage> createState() => _CartItemsPageState();
@@ -18,7 +20,10 @@ class _CartItemsPageState extends State<CartItemsPage> {
     double width = MediaQuery.of(context).size.width;
     return Column(
       children: [
-        const Expanded(child: CartItemsListView()),
+        if (Provider.of<Cart>(context).count == 0)
+          Expanded(child: Image.asset("assets/empty-cart.png"))
+        else
+          const Expanded(child: CartItemsListView()),
         const Divider(
           thickness: 2,
         ),
@@ -38,7 +43,7 @@ class _CartItemsPageState extends State<CartItemsPage> {
                   style: AppSettings.textStyle(size: width * 0.06),
                 ),
                 Text(
-                  "\$${Provider.of<Cart>(context).totalPrice}",
+                  "\$${Provider.of<Cart>(context).totalPrice.round()}",
                   style: AppSettings.textStyle(size: width * 0.06),
                 ),
               ],
@@ -52,14 +57,25 @@ class _CartItemsPageState extends State<CartItemsPage> {
             bottom: height * 0.05,
           ),
           child: ElevatedButton(
-            onPressed: () {
-              context.read<Cart>().incrementPage();
-            },
+            onPressed: Provider.of<Cart>(context).count == 0
+                ? null
+                : () {
+                    context.read<Cart>().incrementPage();
+                    if (widget.id == 1) {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const CartPage(),
+                        ),
+                      );
+                    }
+                  },
+            statesController: MaterialStatesController(),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Address",
+                  widget.id == 2 ? "Address" : "Continue",
                   style: AppSettings.textStyle(
                     textColor: Colors.white,
                     size: width * 0.05,
@@ -70,7 +86,10 @@ class _CartItemsPageState extends State<CartItemsPage> {
               ],
             ),
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(AppSettings.mainColor),
+              backgroundColor: MaterialStateProperty.all(
+                  Provider.of<Cart>(context).count == 0
+                      ? Colors.grey
+                      : AppSettings.mainColor),
               padding: MaterialStateProperty.all(
                 const EdgeInsets.all(15),
               ),

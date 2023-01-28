@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:womanista/screens/ECommerce/cart/cart_provider.dart';
+import 'package:womanista/screens/modules/ECommerce/cart/cart_provider.dart';
 import 'package:womanista/variables/variables.dart';
 
 class CartPaymentPage extends StatefulWidget {

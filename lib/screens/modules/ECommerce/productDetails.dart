@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:womanista/screens/ECommerce/ProductClass.dart';
-import 'package:womanista/screens/ECommerce/cart/cartPage.dart';
-import 'package:womanista/screens/ECommerce/cart/cart_provider.dart';
+import 'package:womanista/screens/modules/ECommerce/ProductClass.dart';
+import 'package:womanista/screens/modules/ECommerce/cart/cart_ItemsPage.dart';
+import 'package:womanista/screens/modules/ECommerce/cart/cart_provider.dart';
 import 'package:womanista/variables/variables.dart';
 
 class ProductDetails extends StatefulWidget {
@@ -100,17 +100,36 @@ class _ProductDetailsState extends State<ProductDetails> {
             ElevatedButton(
               onPressed: () {
                 context.read<Cart>().add(CartItem(
+                      id: widget.product.id,
                       name: widget.product.name,
                       count: 1,
                       des: widget.product.description,
                       img: widget.product.img,
                       price: widget.product.price,
                     ));
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const CartPage(),
+
+                showModalBottomSheet(
+                  context: context,
+                  builder: (ctx) {
+                    return Column(
+                      children: const [
+                        Expanded(
+                          child: CartItemsPage(
+                            id: 1,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
                   ),
                 );
+                // Navigator.of(context).push(
+                //   MaterialPageRoute(
+                //     builder: (context) => const CartPage(),
+                //   ),
+                // );
               },
               child: const FaIcon(
                 FontAwesomeIcons.cartPlus,

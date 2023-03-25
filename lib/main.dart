@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:womanista/firebase_options.dart';
+import 'package:womanista/screens/modules/ECommerce/ProductClass.dart';
 import 'package:womanista/screens/modules/ECommerce/cart/cart_provider.dart';
 import 'package:womanista/screens/Home.dart';
 import 'package:womanista/screens/login.dart';
@@ -25,6 +26,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => DestinationLocation()),
         ChangeNotifierProvider(create: (_) => ChatProvider()),
         ChangeNotifierProvider(create: (_) => RequestProvider()),
+        ChangeNotifierProvider(create: (_) => ProductProvider()),
       ],
       child: MyApp(),
     ),

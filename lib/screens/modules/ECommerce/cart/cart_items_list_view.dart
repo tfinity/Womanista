@@ -27,7 +27,7 @@ class _CartItemsListViewState extends State<CartItemsListView> {
             children: [
               Row(
                 children: [
-                  Image.asset("${cart.cartProducts[index].img}.png"),
+                  Image.network("${cart.cartProducts[index].img}"),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -38,7 +38,7 @@ class _CartItemsListViewState extends State<CartItemsListView> {
                           children: [
                             Text(
                               cart.cartProducts[index].name!,
-                              style: AppSettings.textStyle(),
+                              style: AppSettings.textStyle(size: 20),
                             ),
                             Text(
                               ("\$${(cart.cartProducts[index].price! * cart.cartProducts[index].count).round()}"),

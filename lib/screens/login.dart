@@ -7,6 +7,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:womanista/screens/Home.dart';
 import 'package:womanista/screens/Signup.dart';
 import 'package:womanista/screens/forgotpassword.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:womanista/variables/variables.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -31,6 +33,9 @@ class _LoginState extends State<Login> {
           .signInWithEmailAndPassword(
               email: email.text, password: password.text);
       log("${user.user!.email}");
+      for (var x in user.user!.providerData) {
+        log("user: ${x.providerId}");
+      }
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (context) => const Home(),
@@ -78,7 +83,7 @@ class _LoginState extends State<Login> {
           top: MediaQuery.of(context).padding.top,
           bottom: MediaQuery.of(context).padding.bottom,
         ),
-        color: Colors.yellow,
+        color: Colors.white,
         child: SizedBox(
           height: height,
           width: width,
@@ -86,33 +91,30 @@ class _LoginState extends State<Login> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
-                height: height * 0.05,
-              ),
-              CircleAvatar(
-                child: Icon(
-                  Icons.person,
-                  size: height * 0.15,
-                ),
-                radius: height * 0.1,
+                height: height * 0.04,
               ),
               SizedBox(
-                height: height * 0.05,
+                height: height * 0.15,
+                child: Image.asset("assets/logo.png"),
+              ),
+              SizedBox(
+                height: height * 0.04,
               ),
               Text(
                 "Sign In",
                 style: GoogleFonts.ptSerif(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: AppSettings.mainColor),
               ),
               SizedBox(
                 height: height * 0.03,
               ),
               Expanded(
                 child: Container(
-                  decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
+                  decoration: BoxDecoration(
+                      color: AppSettings.mainColorLignt,
+                      borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(40),
                         topRight: Radius.circular(40),
                       )),
@@ -135,11 +137,21 @@ class _LoginState extends State<Login> {
                                 }
                                 return null;
                               },
+                              style: const TextStyle(color: Colors.white),
                               controller: email,
                               decoration: const InputDecoration(
                                 hintText: "Email",
                                 label: Text("Email"),
-                                icon: Icon(Icons.mail),
+                                hintStyle: TextStyle(
+                                  color: Colors.white,
+                                ),
+                                labelStyle: TextStyle(
+                                  color: Colors.white,
+                                ),
+                                icon: Icon(
+                                  Icons.mail,
+                                  color: Colors.white,
+                                ),
                                 contentPadding: EdgeInsets.all(0),
                               ),
                               keyboardType: TextInputType.emailAddress,
@@ -154,11 +166,23 @@ class _LoginState extends State<Login> {
                                 }
                                 return null;
                               },
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
                               controller: password,
                               decoration: InputDecoration(
                                 hintText: "Password",
                                 label: const Text("Password"),
-                                icon: const Icon(Icons.key),
+                                icon: const Icon(
+                                  Icons.key,
+                                  color: Colors.white,
+                                ),
+                                hintStyle: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                                labelStyle: const TextStyle(
+                                  color: Colors.white,
+                                ),
                                 suffixIcon: IconButton(
                                   onPressed: () {
                                     isPassShow = !isPassShow;
@@ -168,6 +192,7 @@ class _LoginState extends State<Login> {
                                     isPassShow
                                         ? Icons.remove_red_eye_outlined
                                         : Icons.remove_red_eye,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
@@ -192,6 +217,7 @@ class _LoginState extends State<Login> {
                                   "Forgot Password?",
                                   style: GoogleFonts.ptSerif(
                                     fontSize: 14,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
@@ -205,7 +231,12 @@ class _LoginState extends State<Login> {
                           ),
                           ElevatedButton(
                             onPressed: userLogin,
-                            child: const Text("Sign in"),
+                            child: Text(
+                              "Sign in",
+                              style: TextStyle(color: AppSettings.mainColor),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white),
                           ),
                           SizedBox(
                             height: height * 0.03,
@@ -222,6 +253,7 @@ class _LoginState extends State<Login> {
                               "Create New Account?",
                               style: GoogleFonts.ptSerif(
                                 fontSize: 14,
+                                color: Colors.white,
                               ),
                             ),
                           ),
@@ -229,19 +261,72 @@ class _LoginState extends State<Login> {
                             height: height * 0.03,
                           ),
                           ElevatedButton.icon(
-                            onPressed: () {},
-                            icon: const FaIcon(FontAwesomeIcons.google),
+                            onPressed: () async {
+                              loadingIndicator(context);
+                              await signInWithGoogle().then(
+                                (value) {
+                                  Navigator.of(context).pop();
+                                  log("${value.user!.displayName}");
+                                  log("length: ${value.user!.providerData.length}");
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                      builder: (context) => const Home(),
+                                    ),
+                                    (route) => false,
+                                  );
+                                  // bool password = false;
+                                  // for (var x in value.user!.providerData) {
+                                  //   log("user: ${x.providerId}");
+                                  //   if (x.providerId == "password" &&
+                                  //       x.photoURL == null) {
+                                  //     password = true;
+                                  //     break;
+                                  //   }
+                                  // }
+                                  // if (password) {
+                                  //   Navigator.of(context).pushAndRemoveUntil(
+                                  //     MaterialPageRoute(
+                                  //       builder: (context) => const Home(),
+                                  //     ),
+                                  //     (route) => false,
+                                  //   );
+                                  // } else {
+                                  //   Navigator.of(context).push(
+                                  //     MaterialPageRoute(
+                                  //       builder: (context) =>
+                                  //           const SetPassword(),
+                                  //     ),
+                                  //   );
+                                  // }
+                                },
+                                onError: (e) {
+                                  Navigator.of(context).pop();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          "Signin Failed... Try Again Later"),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            icon: FaIcon(
+                              FontAwesomeIcons.google,
+                              color: AppSettings.mainColor,
+                            ),
                             label: Text(
                               "Signin with google",
                               style: GoogleFonts.ptSerif(
                                 fontSize: 14,
+                                color: AppSettings.mainColor,
                               ),
                             ),
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                const Color.fromARGB(207, 255, 235, 59),
-                              ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
                             ),
+                          ),
+                          const SizedBox(
+                            height: 50,
                           ),
                         ],
                       ),
@@ -254,5 +339,33 @@ class _LoginState extends State<Login> {
         ),
       ),
     );
+  }
+
+  Future<UserCredential> signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
+  void loadingIndicator(BuildContext ctx) {
+    showDialog(
+        context: ctx,
+        builder: (context) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
   }
 }

@@ -102,8 +102,8 @@ class _RideBookingHomeState extends State<RideBookingHome> {
     );
   }
 
-  Future<void> _goToTheLake() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kLake!));
-  }
+  // Future<void> _goToTheLake() async {
+  //   final GoogleMapController controller = await _controller.future;
+  //   controller.animateCamera(CameraUpdate.newCameraPosition(_kLake!));
+  // }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:womanista/screens/modules/ECommerce/Products.dart';
+import 'package:womanista/screens/modules/ECommerce/adminSide/AdminHome.dart';
 import 'package:womanista/screens/modules/ECommerce/appbar.dart';
 
 class Ecommerce extends StatefulWidget {
@@ -10,6 +12,11 @@ class Ecommerce extends StatefulWidget {
 }
 
 class _EcommerceState extends State<Ecommerce> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -40,6 +47,17 @@ class _EcommerceState extends State<Ecommerce> {
       //         icon: const FaIcon(FontAwesomeIcons.cartShopping))
       //   ],
       // ),
+      backgroundColor: Colors.white,
+      floatingActionButton: CircleAvatar(
+        radius: 35,
+        child: IconButton(
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const AdminHomeECommerce()));
+          },
+          icon: FaIcon(FontAwesomeIcons.cartShopping, size: height * 0.04),
+        ),
+      ),
       body: Padding(
         padding: EdgeInsets.only(
             top: MediaQuery.of(context).padding.top + 12,

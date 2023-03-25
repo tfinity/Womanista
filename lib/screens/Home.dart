@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:womanista/screens/login.dart';
 import 'package:womanista/screens/modules/ECommerce/Ecommerce.dart';
 import 'package:womanista/screens/modules/RideBooking/ride_booking_homepage.dart';
 import 'package:womanista/screens/modules/selfeDefence/selfDefence.dart';
+import 'package:womanista/screens/settings.dart';
 import 'package:womanista/variables/variables.dart';
 
 class Home extends StatefulWidget {
@@ -13,6 +16,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  User? user = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -43,24 +47,64 @@ class _HomeState extends State<Home> {
                     child: Row(
                       children: [
                         SizedBox(
-                          width: width * 0.08,
+                          width: width * 0.03,
+                        ),
+                        IconButton(
+                          onPressed: () async {
+                            FirebaseAuth.instance.signOut().then((value) {
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                  builder: (ctx) => const Login(),
+                                ),
+                                (route) => false,
+                              );
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.logout,
+                            color: Colors.white,
+                          ),
                         ),
                         CircleAvatar(
                           radius: height * 0.05,
+                          foregroundImage: user!.photoURL != null
+                              ? NetworkImage(user!.photoURL!)
+                              : null,
+                          // onForegroundImageError: (exception, stackTrace) {
+                          //   ScaffoldMessenger.of(context).showSnackBar(
+                          //     SnackBar(
+                          //       content: Text("$exception"),
+                          //     ),
+                          //   );
+                          // },
                           child: Icon(
                             Icons.person,
                             size: height * 0.05,
                           ),
                         ),
                         SizedBox(
-                          width: width * 0.1,
+                          width: width * 0.05,
                         ),
                         Text(
-                          "Welcome \n UserName",
+                          "Welcome,\n     ${user?.displayName}",
                           style: AppSettings.textStyle(
                             size: 20,
                             weight: FontWeight.bold,
                             textColor: Colors.white,
+                          ),
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const Settings(),
+                              ),
+                            );
+                          },
+                          icon: const Icon(
+                            Icons.settings,
+                            color: Colors.white,
                           ),
                         ),
                       ],

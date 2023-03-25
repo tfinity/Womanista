@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:womanista/screens/Home.dart';
+import 'package:womanista/variables/variables.dart';
 
 class Signup extends StatefulWidget {
   const Signup({Key? key}) : super(key: key);
@@ -20,18 +22,36 @@ class _SignupState extends State<Signup> {
   TextEditingController confrimPassword = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  registerUser() async {
+  Future<bool> registerUser() async {
     log("${email.text}  ${password.text}");
     try {
       UserCredential user = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
               email: email.text, password: password.text);
       log("${user.user!.email}");
+      await user.user!.updateDisplayName(username.text);
+      return true;
     } on FirebaseAuthException catch (e) {
       log("${e.code} ${e.message}");
+      Navigator.of(context).pop();
+      showDialog(
+          context: context,
+          builder: (ctx) {
+            return AlertDialog(
+              title: const Text("Error"),
+              content: const Text("Play Try Again Later"),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("OK"),
+                ),
+              ],
+            );
+          });
+      return false;
     }
-
-    log("after");
   }
 
   @override
@@ -44,7 +64,7 @@ class _SignupState extends State<Signup> {
           top: MediaQuery.of(context).padding.top,
           bottom: MediaQuery.of(context).padding.bottom,
         ),
-        color: Colors.yellow,
+        color: Colors.white,
         child: SizedBox(
           height: height,
           width: width,
@@ -52,23 +72,28 @@ class _SignupState extends State<Signup> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
-                height: height * 0.05,
-              ),
-              CircleAvatar(
-                child: Icon(
-                  Icons.person,
-                  size: height * 0.15,
-                ),
-                radius: height * 0.1,
+                height: height * 0.04,
               ),
               SizedBox(
-                height: height * 0.05,
+                height: height * 0.15,
+                child: Image.asset("assets/logo.png"),
+              ),
+              // CircleAvatar(
+              //   child: Icon(
+              //     Icons.person,
+              //     size: height * 0.15,
+              //   ),
+              //   radius: height * 0.1,
+              // ),
+              SizedBox(
+                height: height * 0.04,
               ),
               Text(
                 "Create Your Account",
                 style: GoogleFonts.ptSerif(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
+                  color: AppSettings.mainColor,
                 ),
               ),
               SizedBox(
@@ -76,9 +101,9 @@ class _SignupState extends State<Signup> {
               ),
               Expanded(
                 child: Container(
-                  decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
+                  decoration: BoxDecoration(
+                      color: AppSettings.mainColorLignt,
+                      borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(40),
                         topRight: Radius.circular(40),
                       )),
@@ -101,11 +126,23 @@ class _SignupState extends State<Signup> {
                                 }
                                 return null;
                               },
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
                               controller: username,
                               decoration: const InputDecoration(
                                 hintText: "Username",
                                 label: Text("Username"),
-                                icon: Icon(Icons.person),
+                                hintStyle: TextStyle(
+                                  color: Colors.white,
+                                ),
+                                labelStyle: TextStyle(
+                                  color: Colors.white,
+                                ),
+                                icon: Icon(
+                                  Icons.person,
+                                  color: Colors.white,
+                                ),
                               ),
                               keyboardType: TextInputType.name,
                             ),
@@ -119,11 +156,23 @@ class _SignupState extends State<Signup> {
                                 }
                                 return null;
                               },
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
                               controller: email,
                               decoration: const InputDecoration(
                                 hintText: "Email",
                                 label: Text("Email"),
-                                icon: Icon(Icons.mail),
+                                hintStyle: TextStyle(
+                                  color: Colors.white,
+                                ),
+                                labelStyle: TextStyle(
+                                  color: Colors.white,
+                                ),
+                                icon: Icon(
+                                  Icons.mail,
+                                  color: Colors.white,
+                                ),
                               ),
                               keyboardType: TextInputType.emailAddress,
                             ),
@@ -140,11 +189,23 @@ class _SignupState extends State<Signup> {
                                 }
                                 return null;
                               },
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
                               controller: password,
                               decoration: InputDecoration(
                                 hintText: "Password",
                                 label: const Text("Password"),
-                                icon: const Icon(Icons.key),
+                                hintStyle: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                                labelStyle: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                                icon: const Icon(
+                                  Icons.key,
+                                  color: Colors.white,
+                                ),
                                 suffixIcon: IconButton(
                                   onPressed: () {
                                     isPassShow = !isPassShow;
@@ -154,6 +215,7 @@ class _SignupState extends State<Signup> {
                                     isPassShow
                                         ? Icons.remove_red_eye_outlined
                                         : Icons.remove_red_eye,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
@@ -172,11 +234,23 @@ class _SignupState extends State<Signup> {
                                 }
                                 return null;
                               },
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
                               controller: confrimPassword,
                               decoration: InputDecoration(
                                 hintText: "Confirm Password",
                                 label: const Text("Confirm Password"),
-                                icon: const Icon(Icons.key),
+                                hintStyle: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                                labelStyle: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                                icon: const Icon(
+                                  Icons.key,
+                                  color: Colors.white,
+                                ),
                                 suffixIcon: IconButton(
                                   onPressed: () {
                                     isConfrimPassShow = !isConfrimPassShow;
@@ -186,6 +260,7 @@ class _SignupState extends State<Signup> {
                                     isConfrimPassShow
                                         ? Icons.remove_red_eye_outlined
                                         : Icons.remove_red_eye,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
@@ -196,15 +271,40 @@ class _SignupState extends State<Signup> {
                             height: height * 0.02,
                           ),
                           ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (formKey.currentState!.validate()) {
-                                registerUser();
+                                loadingIndicator(context);
+                                registerUser().then(
+                                  (value) {
+                                    if (value) {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => const Home(),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  onError: (e) {
+                                    Navigator.of(context).pop();
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                            "Registration Failed... Try Again Later"),
+                                      ),
+                                    );
+                                  },
+                                );
                               }
                             },
-                            child: const Text("Sign up"),
+                            child: Text(
+                              "Sign up",
+                              style: TextStyle(color: AppSettings.mainColor),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white),
                           ),
                           SizedBox(
-                            height: height * 0.03,
+                            height: height * 0.015,
                           ),
                           GestureDetector(
                             onTap: () {
@@ -214,6 +314,7 @@ class _SignupState extends State<Signup> {
                               "Already have an account? login",
                               style: GoogleFonts.ptSerif(
                                 fontSize: 14,
+                                color: Colors.white,
                               ),
                             ),
                           ),
@@ -228,5 +329,15 @@ class _SignupState extends State<Signup> {
         ),
       ),
     );
+  }
+
+  void loadingIndicator(BuildContext ctx) {
+    showDialog(
+        context: ctx,
+        builder: (context) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
   }
 }

@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:womanista/screens/modules/ECommerce/ProductClass.dart';
-import 'package:womanista/screens/modules/ECommerce/cart/cart_ItemsPage.dart';
-import 'package:womanista/screens/modules/ECommerce/cart/cart_provider.dart';
 import 'package:womanista/variables/variables.dart';
 
-class ProductDetails extends StatefulWidget {
-  const ProductDetails({Key? key, required this.product}) : super(key: key);
+class EditProduct extends StatefulWidget {
+  const EditProduct({Key? key, required this.product}) : super(key: key);
   final Product product;
 
   @override
-  State<ProductDetails> createState() => _ProductDetailsState();
+  State<EditProduct> createState() => _EditProductState();
 }
 
-class _ProductDetailsState extends State<ProductDetails> {
+class _EditProductState extends State<EditProduct> {
   bool isFavourite = false;
   @override
   Widget build(BuildContext context) {
@@ -93,6 +89,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                 ],
               ),
             ),
+            const Text("Quantity"),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -104,60 +101,7 @@ class _ProductDetailsState extends State<ProductDetails> {
               ),
             ),
             //Add to cart
-            ElevatedButton(
-              onPressed: () {
-                context.read<Cart>().add(CartItem(
-                      id: widget.product.id,
-                      name: widget.product.name,
-                      count: 1,
-                      des: widget.product.description,
-                      img: widget.product.img,
-                      price: widget.product.price,
-                    ));
 
-                showModalBottomSheet(
-                  context: context,
-                  builder: (ctx) {
-                    return Column(
-                      children: const [
-                        Expanded(
-                          child: CartItemsPage(
-                            id: 1,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                );
-                // Navigator.of(context).push(
-                //   MaterialPageRoute(
-                //     builder: (context) => const CartPage(),
-                //   ),
-                // );
-              },
-              child: const FaIcon(
-                FontAwesomeIcons.cartPlus,
-              ),
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all(AppSettings.mainColor),
-                padding: MaterialStateProperty.all(
-                  const EdgeInsets.symmetric(
-                    vertical: 10,
-                    horizontal: 10,
-                  ),
-                ),
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10))),
-              ),
-            ),
-            // Text(
-            //   "+ Add to Cart",
-            //   style: AppSettings.textStyle(size: 20),
-            // ),
             SizedBox(
               height: height * 0.01,
             ),

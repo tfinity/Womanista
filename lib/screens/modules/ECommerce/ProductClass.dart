@@ -6,7 +6,14 @@ class Product {
   double? price;
   String? img;
   String? description;
-  Product({this.id, this.name, this.price, this.img, this.description});
+  int? quantity;
+  Product(
+      {this.id,
+      this.name,
+      this.price,
+      this.img,
+      this.description,
+      this.quantity});
 }
 
 class ProductProvider with ChangeNotifier {
@@ -23,5 +30,9 @@ class ProductProvider with ChangeNotifier {
   remove(Product p) {
     products.removeWhere((element) => element.id == p.id);
     notifyListeners();
+  }
+
+  void clear() {
+    products.clear();
   }
 }

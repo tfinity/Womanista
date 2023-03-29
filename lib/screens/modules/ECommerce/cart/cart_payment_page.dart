@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:womanista/screens/modules/ECommerce/cart/cart_provider.dart';
@@ -100,13 +102,37 @@ class _CartPaymentPageState extends State<CartPaymentPage> {
               ),
               child: ElevatedButton(
                 onPressed: () {
-                  context.read<Cart>().incrementPage();
+                  User user = FirebaseAuth.instance.currentUser!;
+                  FirebaseFirestore.instance
+                      .collection("E-Commerce")
+                      .doc("Orders")
+                      .collection("Orders")
+                      .add(
+                    {
+                      "User": {
+                        "id": user.uid,
+                        "Name": user.displayName ?? '',
+                        "Email": user.email ?? user.phoneNumber ?? '',
+                      },
+                      'Items': context
+                          .read<Cart>()
+                          .products
+                          .map((e) => e.toJsonIdCount())
+                          .toList(),
+                      'Total Price': context.read<Cart>().totalPrice,
+                    },
+                  ).then(
+                    (value) {
+                      context.read<Cart>().products.clear();
+                      context.read<Cart>().incrementPage();
+                    },
+                  );
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Payment",
+                      "Confirm",
                       style: AppSettings.textStyle(
                         textColor: Colors.white,
                         size: width * 0.05,

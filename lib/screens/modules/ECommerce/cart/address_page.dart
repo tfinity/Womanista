@@ -11,6 +11,10 @@ class CartAddressPage extends StatefulWidget {
 }
 
 class _CartAddressPageState extends State<CartAddressPage> {
+  TextEditingController address = TextEditingController();
+  TextEditingController city = TextEditingController();
+  TextEditingController state = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -35,6 +39,7 @@ class _CartAddressPageState extends State<CartAddressPage> {
             SizedBox(
               width: width * 0.8,
               child: TextField(
+                controller: address,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -75,6 +80,7 @@ class _CartAddressPageState extends State<CartAddressPage> {
                     SizedBox(
                       width: width * 0.4,
                       child: TextField(
+                        controller: city,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -114,6 +120,7 @@ class _CartAddressPageState extends State<CartAddressPage> {
                     SizedBox(
                       width: width * 0.4,
                       child: TextField(
+                        controller: state,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),

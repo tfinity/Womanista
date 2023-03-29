@@ -69,4 +69,9 @@ class CartItem extends Product {
   CartItem({id, name, img, des, price, this.count = 0})
       : super(id: id, name: name, description: des, img: img, price: price);
   int count;
+
+  Map toJsonIdCount() => {
+        'id': id,
+        'count': count,
+      };
 }

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:womanista/screens/modules/ECommerce/ProductClass.dart';
+import 'package:womanista/screens/modules/ECommerce/adminSide/Orders.dart';
 import 'package:womanista/screens/modules/ECommerce/adminSide/add_Product.dart';
 import 'package:womanista/screens/modules/ECommerce/adminSide/edit_product.dart';
 import 'package:womanista/variables/variables.dart';
@@ -17,28 +18,37 @@ class AdminHomeECommerce extends StatefulWidget {
 
 class _AdminHomeState extends State<AdminHomeECommerce> {
   final db = FirebaseFirestore.instance.collection("E-Commerce");
+  int orders = 0;
 
   @override
   void initState() {
-    //loadData();
+    loadData();
     super.initState();
   }
 
   Future<void> loadData() async {
+    //context.read<ProductProvider>().clear();
     log("here");
-    db.doc("Products").collection("Products").get().then((value) {
-      for (var element in value.docs) {
-        final data = element.data();
-        context.read<ProductProvider>().add(
-              Product(
-                  id: element.id,
-                  name: data['Name'],
-                  price: double.parse(data['Price']),
-                  description: data['Description'],
-                  img: data['image']),
-            );
-      }
+    db.doc("Orders").collection("Orders").get().then((value) {
+      orders = value.docs.length;
+      log("order: $orders");
+      setState(() {});
     });
+    // db.doc("Products").collection("Products").get().then((value) {
+    //   for (var element in value.docs) {
+    //     final data = element.data();
+    //     context.read<ProductProvider>().add(
+    //           Product(
+    //             id: element.id,
+    //             name: data['Name'],
+    //             price: double.parse(data['Price']),
+    //             description: data['Description'],
+    //             img: data['image'],
+    //             quantity: int.parse(data['Quantity']),
+    //           ),
+    //         );
+    //   }
+    // });
   }
 
   @override
@@ -62,6 +72,46 @@ class _AdminHomeState extends State<AdminHomeECommerce> {
             ),
             tooltip: 'Add Product',
           ),
+          InkWell(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (ctx) => const Orders(),
+                ),
+              );
+            },
+            child: CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: size.width * 0.05,
+              child: Text(
+                "$orders",
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: size.width * 0.05,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          // IconButton(
+          //   onPressed: () {
+          //     Navigator.of(context).push(
+          //       MaterialPageRoute(
+          //         builder: (ctx) => const AddProduct(),
+          //       ),
+          //     );
+          //   },
+          //   icon: Text("$orders"),
+          //   tooltip: 'Current Orders',
+          //   style: IconButton.styleFrom(
+          //     backgroundColor: Colors.white,
+          //     shape: RoundedRectangleBorder(
+          //       borderRadius: BorderRadius.circular(50),
+          //     ),
+          //     side: const BorderSide(
+          //         color: Colors.white, width: 15, style: BorderStyle.solid),
+          //   ),
+          // ),
         ],
       ),
       body: SizedBox(

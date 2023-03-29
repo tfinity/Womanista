@@ -25,16 +25,19 @@ class _ProductsState extends State<Products> {
 
   Future<void> loadData() async {
     log("here");
+    context.read<ProductProvider>().clear();
     db.doc("Products").collection("Products").get().then((value) {
       for (var element in value.docs) {
         final data = element.data();
         context.read<ProductProvider>().add(
               Product(
-                  id: element.id,
-                  name: data['Name'],
-                  price: double.parse(data['Price']),
-                  description: data['Description'],
-                  img: data['image']),
+                id: element.id,
+                name: data['Name'],
+                price: double.parse(data['Price']),
+                description: data['Description'],
+                img: data['image'],
+                quantity: int.parse(data['Quantity']),
+              ),
             );
       }
     });

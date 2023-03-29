@@ -129,7 +129,10 @@ class _HomeState extends State<Home> {
                         );
                       },
                       child: Card(
-                        color: Colors.grey,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        color: Colors.red,
                         elevation: 2,
                         child: SizedBox(
                           height: height * 0.2,
@@ -141,6 +144,7 @@ class _HomeState extends State<Home> {
                               FaIcon(
                                 FontAwesomeIcons.shield,
                                 size: height * 0.1,
+                                color: Colors.white,
                               ),
                               SizedBox(
                                 height: height * 0.02,
@@ -148,7 +152,10 @@ class _HomeState extends State<Home> {
                               const Text(
                                 "Self Defense",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                ),
                               ),
                             ],
                           ),
@@ -165,7 +172,10 @@ class _HomeState extends State<Home> {
                         );
                       },
                       child: Card(
-                        color: Colors.grey,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        color: Colors.red,
                         elevation: 2,
                         child: SizedBox(
                           height: height * 0.2,
@@ -177,14 +187,18 @@ class _HomeState extends State<Home> {
                               FaIcon(
                                 FontAwesomeIcons.car,
                                 size: height * 0.1,
+                                color: Colors.white,
                               ),
                               SizedBox(
                                 height: height * 0.02,
                               ),
                               const Text(
-                                "Book Ride",
+                                "Book a Ride",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                ),
                               ),
                             ],
                           ),
@@ -201,7 +215,10 @@ class _HomeState extends State<Home> {
                         );
                       },
                       child: Card(
-                        color: Colors.grey,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        color: Colors.red,
                         elevation: 2,
                         child: SizedBox(
                           height: height * 0.2,
@@ -213,6 +230,7 @@ class _HomeState extends State<Home> {
                               FaIcon(
                                 FontAwesomeIcons.userDoctor,
                                 size: height * 0.1,
+                                color: Colors.white,
                               ),
                               SizedBox(
                                 height: height * 0.02,
@@ -220,7 +238,10 @@ class _HomeState extends State<Home> {
                               const Text(
                                 "Doctor Appointment",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                ),
                               ),
                             ],
                           ),
@@ -237,7 +258,10 @@ class _HomeState extends State<Home> {
                         );
                       },
                       child: Card(
-                        color: const Color.fromARGB(40, 158, 158, 158),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        color: Colors.red,
                         elevation: 2,
                         child: SizedBox(
                           height: height * 0.2,
@@ -249,6 +273,7 @@ class _HomeState extends State<Home> {
                               FaIcon(
                                 FontAwesomeIcons.basketShopping,
                                 size: height * 0.1,
+                                color: Colors.white,
                               ),
                               SizedBox(
                                 height: height * 0.02,
@@ -256,7 +281,10 @@ class _HomeState extends State<Home> {
                               const Text(
                                 "Buy Products",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                ),
                               ),
                             ],
                           ),

@@ -1,6 +1,7 @@
-import 'dart:async';
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -8,22 +9,24 @@ import 'package:uuid/uuid.dart';
 import 'package:womanista/screens/modules/RideBooking/DriverSide/requestsPage.dart';
 import 'package:womanista/screens/modules/RideBooking/address_search.dart';
 import 'package:womanista/screens/modules/RideBooking/confirm_ride.dart';
+import 'package:womanista/screens/modules/RideBooking/map_provider.dart';
 import 'package:womanista/screens/modules/RideBooking/place_service.dart';
 import 'package:womanista/screens/modules/RideBooking/rides_provider.dart';
 import 'package:womanista/variables/variables.dart';
 import 'package:location/location.dart';
 
 class Chooseride extends StatefulWidget {
-  const Chooseride({Key? key, required this.controller}) : super(key: key);
-
-  final Completer<GoogleMapController> controller;
-
+  const Chooseride({
+    Key? key,
+  }) : super(key: key);
   @override
   State<Chooseride> createState() => _ChooserideState();
 }
 
 class _ChooserideState extends State<Chooseride> {
   Location location = Location();
+  bool isDriverMode = false;
+  bool start = false;
   List<Ride> testRides = [
     Ride(
       carName: 'this car',
@@ -69,6 +72,57 @@ class _ChooserideState extends State<Chooseride> {
     ),
   ];
 
+  void alertCall(String text) {
+    showDialog(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            title: const Text("Alert!!"),
+            content: Text(text),
+            actions: [
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: AppSettings.mainColor),
+                child: Text(
+                  "OK",
+                  style: AppSettings.textStyle(textColor: Colors.white),
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  Widget startButton(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        FirebaseFirestore.instance.collection("Rides").add({
+          'pickup location': {
+            'name': Provider.of<PickupLocation>(context, listen: false).name,
+            'lat': Provider.of<PickupLocation>(context, listen: false).lat,
+            'lng': Provider.of<PickupLocation>(context, listen: false).long,
+          },
+          'drop location': {
+            'name':
+                Provider.of<DestinationLocation>(context, listen: false).name,
+            'lat': Provider.of<DestinationLocation>(context, listen: false).lat,
+            'lng':
+                Provider.of<DestinationLocation>(context, listen: false).long,
+          },
+        }).then((value) {
+          context.read<RideProvider>().rideid = value.id;
+          start = true;
+          setState(() {});
+        });
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppSettings.mainColor,
+      ),
+      child: const Text("Start"),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -82,7 +136,7 @@ class _ChooserideState extends State<Chooseride> {
           appBar(context),
           locationpick(context, screenSize),
           const Spacer(),
-          availableRides(context, screenSize),
+          start ? availableRides(context, screenSize) : startButton(context),
         ],
       ),
     );
@@ -93,7 +147,9 @@ class _ChooserideState extends State<Chooseride> {
       child: Row(
         children: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
             icon: const Icon(Icons.arrow_back),
           ),
           Text(
@@ -101,20 +157,61 @@ class _ChooserideState extends State<Chooseride> {
             style: AppSettings.textStyle(size: 20),
           ),
           const Spacer(),
-          InkWell(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const RideRequests(),
-                ),
-              );
-            },
-            child: const CircleAvatar(
-              child: Icon(
-                Icons.person,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Switch(
+                value: isDriverMode,
+                onChanged: (v) async {
+                  FirebaseFirestore.instance
+                      .collection("Users")
+                      .doc(FirebaseAuth.instance.currentUser!.email)
+                      .get()
+                      .then(
+                    (value) {
+                      final data = value.data() ??
+                          {
+                            "Driver": false,
+                            "Driver Application": false,
+                          };
+                      if (data["Driver"]) {
+                        if (data["Driver Application"] == "Approved") {
+                          isDriverMode = v;
+                          setState(() {});
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const RideRequests(),
+                            ),
+                          );
+                        } else {
+                          alertCall("Chack your Driver Application status");
+                        }
+                      } else {
+                        alertCall(
+                            "You Need to Register as a Driver to Activate this Feature");
+                      }
+                    },
+                  );
+                },
               ),
-            ),
+              //Text("Driver Mode: ${isDriverMode ? 'On' : 'Off'}"),
+            ],
           ),
+          // InkWell(
+          //   onTap: () {
+          //     Navigator.of(context).push(
+          //       MaterialPageRoute(
+          //         builder: (context) => const RideRequests(),
+          //       ),
+          //     );
+          //   },
+          //   child: const CircleAvatar(
+          //     child: Icon(
+          //       Icons.person,
+          //     ),
+          //   ),
+          // ),
           const SizedBox(
             width: 5,
           ),
@@ -192,12 +289,29 @@ class _ChooserideState extends State<Chooseride> {
                               delegate:
                                   AddressSearch(sessionToken: sessionToken),
                             );
+                            if (result?.placeId == "") {
+                              return;
+                            }
                             var latlong = await PlaceApiProvider(sessionToken)
                                 .getPlaceDetailFromId(result!.placeId);
                             context.read<PickupLocation>().adddata(
                                 result.description,
                                 latlong["lat"],
                                 latlong['lng']);
+                            final marker = Marker(
+                              markerId: const MarkerId("current"),
+                              infoWindow: const InfoWindow(
+                                title: "Pickup Location",
+                              ),
+                              position: LatLng(latlong["lat"], latlong['lng']),
+                            );
+                            context.read<AppMap>().moveMap(
+                                  latlong["lat"],
+                                  latlong['lng'],
+                                );
+                            context
+                                .read<AppMap>()
+                                .addMarker(marker, "Pickup Location");
                           },
                           child: Text(
                             Provider.of<PickupLocation>(context).name,
@@ -213,13 +327,25 @@ class _ChooserideState extends State<Chooseride> {
                           log("${currentLocation.heading}");
                           log("${currentLocation.latitude}");
                           log("${currentLocation.longitude}");
-                          GoogleMapController controller =
-                              await widget.controller.future;
-                          context.read<PickupLocation>().moveMap(
-                                controller,
-                                latitude: currentLocation.latitude!,
-                                longitute: currentLocation.longitude!,
+                          // GoogleMapController controller =
+                          //     await widget.controller.future;
+                          context.read<PickupLocation>().adddata(
+                              "Your Location",
+                              currentLocation.latitude!,
+                              currentLocation.longitude!);
+                          final marker = Marker(
+                            markerId: const MarkerId("current"),
+                            infoWindow: const InfoWindow(
+                              title: "Your Location",
+                            ),
+                            position: LatLng(currentLocation.latitude!,
+                                currentLocation.longitude!),
+                          );
+                          context.read<AppMap>().moveMap(
+                                currentLocation.latitude!,
+                                currentLocation.longitude!,
                               );
+                          context.read<AppMap>().addMarker(marker, "current");
                         },
                         icon: const Icon(Icons.location_on),
                       ),
@@ -239,10 +365,19 @@ class _ChooserideState extends State<Chooseride> {
                           .getPlaceDetailFromId(result!.placeId);
                       context.read<DestinationLocation>().adddata(
                           result.description, latlong["lat"], latlong['lng']);
-                      GoogleMapController controller =
-                          await widget.controller.future;
-                      context.read<DestinationLocation>().moveMap(controller,
-                          latitude: latlong["lat"], longitute: latlong['lng']);
+                      // GoogleMapController controller =
+                      //     await widget.controller.future;
+                      context
+                          .read<AppMap>()
+                          .moveMap(latlong["lat"], latlong['lng']);
+                      final marker = Marker(
+                        markerId: const MarkerId("current"),
+                        infoWindow: const InfoWindow(
+                          title: "Destination",
+                        ),
+                        position: LatLng(latlong["lat"], latlong['lng']),
+                      );
+                      context.read<AppMap>().addMarker(marker, "destination");
                     },
                     child: Text(
                       Provider.of<DestinationLocation>(context).name,
@@ -266,9 +401,9 @@ class _ChooserideState extends State<Chooseride> {
 
     return Card(
       child: Container(
-        height: screenSize.height * 0.35,
+        height: screenSize.height * 0.38,
         width: screenSize.width * 0.9,
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

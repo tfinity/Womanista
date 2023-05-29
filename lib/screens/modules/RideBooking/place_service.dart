@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
 
 class Suggestion {
@@ -20,21 +19,21 @@ class Suggestion {
 class Address {
   double lat;
   double long;
-  moveMap(
-    GoogleMapController c, {
-    double latitude = 0,
-    double longitute = 0,
-  }) {
-    lat = latitude;
-    long = longitute;
-    c.animateCamera(
-      CameraUpdate.newCameraPosition(CameraPosition(
-          bearing: 192.8334901395799,
-          target: LatLng(latitude, longitute),
-          tilt: 59.440717697143555,
-          zoom: 19.151926040649414)),
-    );
-  }
+  // moveMap(
+  //   GoogleMapController c, {
+  //   double latitude = 0,
+  //   double longitute = 0,
+  // }) {
+  //   lat = latitude;
+  //   long = longitute;
+  //   c.animateCamera(
+  //     CameraUpdate.newCameraPosition(CameraPosition(
+  //         bearing: 192.8334901395799,
+  //         target: LatLng(latitude, longitute),
+  //         tilt: 59.440717697143555,
+  //         zoom: 19.151926040649414)),
+  //   );
+  // }
 
   Address({this.lat = 0.0, this.long = 0.0});
 }

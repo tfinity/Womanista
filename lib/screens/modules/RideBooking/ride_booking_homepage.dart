@@ -1,11 +1,12 @@
-import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:womanista/screens/modules/RideBooking/choose_ride.dart';
+import 'package:womanista/screens/modules/RideBooking/map_provider.dart';
 import 'package:womanista/screens/modules/RideBooking/ride_confirmed.dart';
 import 'package:womanista/screens/modules/RideBooking/ride_in_progress.dart';
 import 'package:womanista/screens/modules/RideBooking/rides_provider.dart';
@@ -18,30 +19,18 @@ class RideBookingHome extends StatefulWidget {
 }
 
 class _RideBookingHomeState extends State<RideBookingHome> {
-  final Completer<GoogleMapController> _controller =
-      Completer<GoogleMapController>();
-
   static const CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(31.5826, 74.3276),
     zoom: 14.4746,
   );
-
-  double lat = 31.5883698;
-  double long = 74.38029089999999;
-
-  CameraPosition? _kLake;
+  Location location = Location();
 
   bool visible = true;
 
   @override
   void initState() {
-    requestPermissions();
-    _kLake = CameraPosition(
-        bearing: 192.8334901395799,
-        target: LatLng(lat, long),
-        tilt: 59.440717697143555,
-        zoom: 19.151926040649414);
     super.initState();
+    requestPermissions();
   }
 
   requestPermissions() async {
@@ -66,8 +55,28 @@ class _RideBookingHomeState extends State<RideBookingHome> {
                 myLocationButtonEnabled: true,
                 initialCameraPosition: _kGooglePlex,
                 //liteModeEnabled: true,
-                onMapCreated: (GoogleMapController controller) {
-                  _controller.complete(controller);
+                onMapCreated: (GoogleMapController controller) async {
+                  context.read<AppMap>().controller.complete(controller);
+                  var currentLocation = await location.getLocation();
+                  log("${currentLocation.heading}");
+                  log("${currentLocation.latitude}");
+                  log("${currentLocation.longitude}");
+                  // GoogleMapController controller =
+                  //     await widget.controller.future;
+                  final marker = Marker(
+                    markerId: const MarkerId("current"),
+                    infoWindow: const InfoWindow(
+                      title: "Your Location",
+                    ),
+                    position: LatLng(
+                        currentLocation.latitude!, currentLocation.longitude!),
+                  );
+                  context.read<AppMap>().moveMap(
+                        currentLocation.latitude!,
+                        currentLocation.longitude!,
+                      );
+                  context.read<AppMap>().addMarker(marker, "current");
+                  // _controller.complete(controller);
                 },
                 scrollGesturesEnabled: true,
                 zoomControlsEnabled: false,
@@ -83,15 +92,17 @@ class _RideBookingHomeState extends State<RideBookingHome> {
                   log("${latlng.latitude}");
                   log("${latlng.longitude}");
                 },
+                markers: context.read<AppMap>().markers.values.toSet(),
+                // polylines: ,
               ),
               Visibility(
                 visible: visible,
                 child: IndexedStack(
                   index: Provider.of<RideProvider>(context).visiblePage,
-                  children: [
-                    Chooseride(controller: _controller),
-                    const RideConfirmed(),
-                    const RideInProgress(),
+                  children: const [
+                    Chooseride(),
+                    RideConfirmed(),
+                    RideInProgress(),
                   ],
                 ),
               ),

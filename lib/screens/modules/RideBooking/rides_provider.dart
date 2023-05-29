@@ -24,6 +24,12 @@ class RideProvider with ChangeNotifier {
   List<Ride> rides = [];
   int chooseRide = 0;
   int visiblePage = 0;
+  String rideid = '';
+
+  void setId(String id) {
+    rideid = id;
+    notifyListeners();
+  }
 
   add(Ride ride) {
     rides.add(ride);

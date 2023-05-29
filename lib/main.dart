@@ -11,6 +11,7 @@ import 'package:womanista/screens/login.dart';
 import 'package:provider/provider.dart';
 import 'package:womanista/screens/modules/RideBooking/DriverSide/ride_requests_provider.dart';
 import 'package:womanista/screens/modules/RideBooking/chat_provider.dart';
+import 'package:womanista/screens/modules/RideBooking/map_provider.dart';
 import 'package:womanista/screens/modules/RideBooking/place_service.dart';
 import 'package:womanista/screens/modules/RideBooking/rides_provider.dart';
 
@@ -27,6 +28,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ChatProvider()),
         ChangeNotifierProvider(create: (_) => RequestProvider()),
         ChangeNotifierProvider(create: (_) => ProductProvider()),
+        ChangeNotifierProvider(create: (_) => AppMap()),
       ],
       child: MyApp(),
     ),

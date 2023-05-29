@@ -9,6 +9,7 @@ class DriverDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppSettings.mainColor,
@@ -25,12 +26,12 @@ class DriverDetails extends StatelessWidget {
               const SizedBox(
                 width: 20,
               ),
-              const CircleAvatar(
+              CircleAvatar(
                 child: Icon(
                   Icons.person,
-                  size: 50,
+                  size: size.height * 0.05,
                 ),
-                radius: 50,
+                radius: size.height * 0.05,
               ),
               const SizedBox(
                 width: 20,

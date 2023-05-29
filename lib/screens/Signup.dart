@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,6 +31,38 @@ class _SignupState extends State<Signup> {
               email: email.text, password: password.text);
       log("${user.user!.email}");
       await user.user!.updateDisplayName(username.text);
+      try {
+        await FirebaseFirestore.instance
+            .collection("Users")
+            .doc(user.user!.email)
+            .set({
+          "uid": user.user!.uid,
+          "email": user.user!.email,
+          "displayName": user.user!.displayName,
+          "Driver": false,
+          "Driver Application": "Not Submitted",
+        });
+      } on FirebaseException catch (e) {
+        log("${e.code} ${e.message}");
+        Navigator.of(context).pop();
+        showDialog(
+            context: context,
+            builder: (ctx) {
+              return AlertDialog(
+                title: const Text("Error"),
+                content: const Text("Play Try Again Later"),
+                actions: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("OK"),
+                  ),
+                ],
+              );
+            });
+        return false;
+      }
       return true;
     } on FirebaseAuthException catch (e) {
       log("${e.code} ${e.message}");

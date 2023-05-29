@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:womanista/screens/AppDrawer.dart';
 import 'package:womanista/screens/login.dart';
+import 'package:womanista/screens/modules/DoctorModule/Manu.dart';
 import 'package:womanista/screens/modules/ECommerce/Ecommerce.dart';
 import 'package:womanista/screens/modules/RideBooking/ride_booking_homepage.dart';
 import 'package:womanista/screens/modules/selfeDefence/selfDefence.dart';
@@ -22,6 +24,36 @@ class _HomeState extends State<Home> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
+      drawer: const Appdrawer(),
+      appBar: AppBar(
+        backgroundColor: AppSettings.mainColor,
+        elevation: 0,
+        toolbarHeight: kToolbarHeight,
+        title: SizedBox(
+          height: kToolbarHeight,
+          child: Image.asset(
+            "assets/logo.png",
+            fit: BoxFit.contain,
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const Settings(),
+                ),
+              );
+            },
+            icon: const Icon(
+              Icons.settings,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
       body: Center(
         child: SizedBox(
           // height: height,
@@ -48,22 +80,6 @@ class _HomeState extends State<Home> {
                       children: [
                         SizedBox(
                           width: width * 0.03,
-                        ),
-                        IconButton(
-                          onPressed: () async {
-                            FirebaseAuth.instance.signOut().then((value) {
-                              Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                  builder: (ctx) => const Login(),
-                                ),
-                                (route) => false,
-                              );
-                            });
-                          },
-                          icon: const Icon(
-                            Icons.logout,
-                            color: Colors.white,
-                          ),
                         ),
                         CircleAvatar(
                           radius: height * 0.05,
@@ -95,15 +111,18 @@ class _HomeState extends State<Home> {
                         ),
                         const Spacer(),
                         IconButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const Settings(),
-                              ),
-                            );
+                          onPressed: () async {
+                            FirebaseAuth.instance.signOut().then((value) {
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                  builder: (ctx) => const Login(),
+                                ),
+                                (route) => false,
+                              );
+                            });
                           },
                           icon: const Icon(
-                            Icons.settings,
+                            Icons.logout,
                             color: Colors.white,
                           ),
                         ),
@@ -210,7 +229,7 @@ class _HomeState extends State<Home> {
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => const SelfDefence(),
+                            builder: (context) => const DoctorMenu(),
                           ),
                         );
                       },

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -268,12 +269,49 @@ class _LoginState extends State<Login> {
                                   Navigator.of(context).pop();
                                   log("${value.user!.displayName}");
                                   log("length: ${value.user!.providerData.length}");
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(
-                                      builder: (context) => const Home(),
-                                    ),
-                                    (route) => false,
-                                  );
+                                  try {
+                                    FirebaseFirestore.instance
+                                        .collection("Users")
+                                        .doc(value.user!.email)
+                                        .set({
+                                      "uid": value.user!.uid,
+                                      "email": value.user!.email,
+                                      "displayName": value.user!.displayName,
+                                      "Driver": false,
+                                      "Driver Application": "Not Submitted",
+                                    }).then(
+                                      (value) {
+                                        Navigator.of(context)
+                                            .pushAndRemoveUntil(
+                                          MaterialPageRoute(
+                                            builder: (context) => const Home(),
+                                          ),
+                                          (route) => false,
+                                        );
+                                      },
+                                    );
+                                  } on FirebaseException catch (e) {
+                                    log("${e.code} ${e.message}");
+                                    Navigator.of(context).pop();
+                                    showDialog(
+                                        context: context,
+                                        builder: (ctx) {
+                                          return AlertDialog(
+                                            title: const Text("Error"),
+                                            content: const Text(
+                                                "Play Try Again Later"),
+                                            actions: [
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: const Text("OK"),
+                                              ),
+                                            ],
+                                          );
+                                        });
+                                  }
+
                                   // bool password = false;
                                   // for (var x in value.user!.providerData) {
                                   //   log("user: ${x.providerId}");

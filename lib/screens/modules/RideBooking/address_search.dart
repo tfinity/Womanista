@@ -28,7 +28,7 @@ class AddressSearch extends SearchDelegate<Suggestion> {
       tooltip: 'Back',
       icon: const Icon(Icons.arrow_back),
       onPressed: () {
-        //close(context, null);
+        close(context, Suggestion("", ""));
       },
     );
   }

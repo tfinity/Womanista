@@ -34,25 +34,29 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  google_fonts: ^3.0.1
-  firebase_core: ^2.3.0
-  font_awesome_flutter: ^10.2.1
-  firebase_auth: ^4.1.5
-  youtube_player_flutter: ^8.1.1
-  cached_network_image: ^3.2.1
-  provider: ^6.0.5
-  animated_text_kit: ^4.2.2
-  google_maps_flutter: ^2.2.3
-  permission_handler: ^10.2.0
-  http: ^0.13.5
-  uuid: ^3.0.7
-  location: ^4.4.0
-  google_sign_in: ^5.4.4
-  cloud_firestore: ^4.4.1
-  firebase_storage: ^11.0.12
-  image_picker: ^0.8.6+1
-  flutter_rating_bar: ^4.0.1
-  file_picker: ^5.2.5
+  google_fonts: ^4.0.4
+  firebase_core: 
+  font_awesome_flutter: 
+  firebase_auth: 
+  youtube_player_flutter: 
+  cached_network_image:
+  provider: 
+  animated_text_kit: 
+  google_maps_flutter: 
+  permission_handler: 
+  http: 
+  uuid: 
+  location: 
+    git:
+      url: https://github.com/781flyingdutchman/flutterlocation.git
+      ref: V4
+      path: packages/location
+  google_sign_in: 
+  cloud_firestore: 
+  firebase_storage: 
+  image_picker: 
+  flutter_rating_bar: 
+  #file_picker: 
 
 dev_dependencies:
   flutter_test:

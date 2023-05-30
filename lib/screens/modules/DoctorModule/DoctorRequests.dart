@@ -4,6 +4,8 @@ import 'package:womanista/screens/modules/DoctorModule/DoctorRequestProvider.dar
 
 //import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 class DoctorRequestList extends StatelessWidget {
+  const DoctorRequestList({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(

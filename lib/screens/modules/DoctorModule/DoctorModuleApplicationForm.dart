@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:file_picker/file_picker.dart';
+// import 'package:file_picker/file_picker.dart';
 import 'package:womanista/screens/modules/DoctorModule/Manu.dart';
 
 class DoctorForm extends StatelessWidget {
+  const DoctorForm({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
@@ -311,7 +313,7 @@ class _DoctorFormAppState extends State<DoctorFormApp> {
                   child: const Text('UPLOAD FILE'),
                   onPressed: () async {
                     setState(() {
-                      picked1 = FilePicker.platform.pickFiles();
+                      //picked1 = FilePicker.platform.pickFiles();
                     });
 
                     if (picked1 != null) {}
@@ -329,7 +331,7 @@ class _DoctorFormAppState extends State<DoctorFormApp> {
                   child: const Text('UPLOAD FILE'),
                   onPressed: () async {
                     setState(() {
-                      picked2 = FilePicker.platform.pickFiles();
+                      //picked2 = FilePicker.platform.pickFiles();
                     });
                     if (picked2 != null) {
                       print(

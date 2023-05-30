@@ -64,8 +64,8 @@ class _EcommerceState extends State<Ecommerce> {
             left: 12,
             right: 12,
             bottom: 12),
-        child: Column(
-          children: const [
+        child: const Column(
+          children: [
             Appbar(),
             Products(),
           ],

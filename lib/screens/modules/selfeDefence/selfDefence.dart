@@ -66,11 +66,14 @@ class _SelfDefenceState extends State<SelfDefence> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        padding: const EdgeInsets.symmetric(vertical: 20),
         child: ytube.isEmpty
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                
                 children: [
+                 
+                  
                   SizedBox(
                     //height: height * 0.3,
                     //width: width,
@@ -89,11 +92,11 @@ class _SelfDefenceState extends State<SelfDefence> {
                 child: ListView.separated(
                   physics: const BouncingScrollPhysics(),
                   separatorBuilder: (BuildContext context, int index) =>
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
                   itemCount: ytube.length,
                   itemBuilder: (context, index) {
                     return SizedBox(
-                      height: 90,
+                      height: 100,
                       child: Card(
                         shape: RoundedRectangleBorder(
                             side: const BorderSide(
@@ -109,7 +112,7 @@ class _SelfDefenceState extends State<SelfDefence> {
                               ),
                               trailing: IconButton(
                                 icon: Icon(
-                                  Icons.play_circle_rounded,
+                                  Icons.play_circle,
                                   size: 35,
                                   color: AppSettings.mainColorLignt,
                                 ),

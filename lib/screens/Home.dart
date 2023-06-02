@@ -6,6 +6,7 @@ import 'package:womanista/screens/login.dart';
 import 'package:womanista/screens/modules/DoctorModule/Manu.dart';
 import 'package:womanista/screens/modules/ECommerce/Ecommerce.dart';
 import 'package:womanista/screens/modules/RideBooking/ride_booking_homepage.dart';
+import 'package:womanista/screens/modules/selfeDefence/Menu.dart';
 import 'package:womanista/screens/modules/selfeDefence/selfDefence.dart';
 import 'package:womanista/screens/settings.dart';
 import 'package:womanista/variables/variables.dart';
@@ -143,7 +144,7 @@ class _HomeState extends State<Home> {
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => const SelfDefence(),
+                            builder: (context) => const SelfDefenceMenu(),
                           ),
                         );
                       },

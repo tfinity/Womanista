@@ -3,6 +3,8 @@ import 'DoctorList.dart';
 //import 'LawsList.dart';
 import 'DoctorRequests.dart';
 import 'DoctorModuleApplicationForm.dart';
+import 'package:womanista/screens/modules/selfeDefence/LawsList.dart';
+
 //import 'package:womanista/chat_provider.dart';
 
 class DoctorMenu extends StatefulWidget {
@@ -36,10 +38,11 @@ class _DoctorMenuState extends State<DoctorMenu> {
             Padding(
               padding: const EdgeInsets.symmetric(),
               child: ElevatedButton(
-                style:
-                    ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.redAccent,
+                ),
                 child: const Text(
-                  "Doctor Appointment Module",
+                  "Doctor List",
                   style: TextStyle(
                     color: Colors.white,
                   ),
@@ -48,8 +51,7 @@ class _DoctorMenuState extends State<DoctorMenu> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const DoctorListApp(),
-                  ),
-                ),
+                  ),),
               ),
             ),
             const SizedBox(height: 20),
@@ -65,7 +67,11 @@ class _DoctorMenuState extends State<DoctorMenu> {
                     color: Colors.white,
                   ),
                 ),
-                onPressed: null,
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LawsListApp(),
+                  ),),
               ),
             ),
             const SizedBox(

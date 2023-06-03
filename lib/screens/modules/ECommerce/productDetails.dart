@@ -118,7 +118,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                 showModalBottomSheet(
                   context: context,
                   builder: (ctx) {
-                    return const Column(
+                    return  Column(
                       children: [
                         Expanded(
                           child: CartItemsPage(

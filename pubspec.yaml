@@ -56,6 +56,8 @@ dependencies:
   firebase_storage: 
   image_picker: 
   flutter_rating_bar: 
+  email_launcher: ^1.1.1
+  url_launcher: ^6.1.11
   #file_picker: 
 
 dev_dependencies:

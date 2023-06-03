@@ -29,6 +29,7 @@ var ProfileDesc = [];
 var Img = [];
 var Rating = [];
 var Desc = [];
+var Email=[];
 
 var data;
 DoctorData doctorData = DoctorData();
@@ -62,14 +63,15 @@ class _DoctorListAppState extends State<DoctorListApp> {
     var idx = 1;
 
     for (var doc in doctorData.doctor) {
-      print(doc.Name);
+      print(doc.Email);
 
       final store = collection.doc('$idx').set({
         "Name": doc.Name,
         "Desc": doc.Desc,
         "Rating": doc.Rating,
         "ProfileDesc": doc.ProfileDesc,
-        "Img": doc.Img
+        "Img": doc.Img,
+        "Email":doc.Email
       });
       idx++;
     }
@@ -78,15 +80,20 @@ class _DoctorListAppState extends State<DoctorListApp> {
     //data=data.docs[i].data()["Name"];
     //print(data);
     collection.get().then((value) {
+      if (Name.isEmpty)
+
       for (var element in value.docs) {
+         
         setState(() {
-          Desc.add(element.data()["Desc"]);
+          
+          {Desc.add(element.data()["Desc"]);
           Name.add(element.data()["Name"]);
           ProfileDesc.add(element.data()["ProfileDesc"]);
           Img.add(element.data()["Img"]);
 
           Rating.add(element.data()["Rating"]);
-          length++;
+          Email.add(element.data()["Email"]);
+          length++;}
         });
       }
     });
@@ -122,48 +129,56 @@ class _DoctorListAppState extends State<DoctorListApp> {
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 5),
         child: SizedBox(
-          child: ListView.builder(
-            //separatorBuilder: (BuildContext context, int index) =>
-            //   const SizedBox(height: 10),
+          child: ListView.separated(
+            separatorBuilder: (BuildContext context, int index) =>
+                          SizedBox(height:MediaQuery.of(context).size.height*0.01) ,
+                
             itemCount: length,
             itemBuilder: (context, index) {
               return SizedBox(
+                  height:MediaQuery.of(context).size.height*0.17 ,
+               
+                     
                 child: Card(
                   //shape:RoundedRectangleBorder(side:BorderSide(color:Color.fromARGB(255, 230, 226, 226)),borderRadius:BorderRadius.circular(10)),
                   child: Center(
-                    child: ListTile(
-                      title: Text(Name[index] + ""),
-                      subtitle: Row(
-                        children: [
-                          Text(
-                            Desc[index],
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                          const Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                          ),
-                          Text(
-                            "${Rating[index]}",
-                          ),
-                        ],
-                      ),
-                      leading: Image.network(
-                        "${Img[index]}",
-                      ),
-                      trailing: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent,
+                     
+                      child: ListTile(
+                        title: Text(Name[index] + ""),
+                        subtitle: Row(
+                          children: [
+                            Text(
+                              Desc[index],
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                            const Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                            Text(
+                              "${Rating[index]}",
+                            ),
+                          ],
                         ),
-                        child: const Text(
-                          "View Details",
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
+                        leading: Image.network(
+                          "${Img[index]}",
                         ),
-                        onPressed: () => UpdateId(index),
+                        trailing: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.redAccent,
+                           // fixedSize: Size(MediaQuery.of(context).size.width*0.2,MediaQuery.of(context).size.height*0.08) ,
+
+                          ),
+                          child: const Text(
+                            "View Details",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                          onPressed: () => UpdateId(index),
+                        ),
                       ),
-                    ),
+                    
                   ),
                 ),
               );

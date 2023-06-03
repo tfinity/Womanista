@@ -3,6 +3,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:womanista/screens/modules/DoctorModule/DoctorList.dart';
 import 'package:womanista/screens/modules/DoctorModule/Doctor_Provider.dart';
+import 'package:womanista/screens/modules/DoctorModule/BookAppointment.dart';
 
 DoctorData doctorData = DoctorData();
 
@@ -36,8 +37,17 @@ class _DoctorProfileState extends State<DoctorProfile> {
     loadData();
     super.initState();
   }
-
+  int id1=0;
   loadData() {}
+   void BookAppointment(int newId) {
+    setState(() {
+      id1 = newId;
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => DoctorEmailButton(id: id1)),
+      );
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,7 +143,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
                     "Book an Appointment",
                     style: TextStyle(color: Colors.white),
                   ),
-                  onPressed: () => {},
+                  onPressed: () => BookAppointment(widget.id),
                 ),
               ),
             ],

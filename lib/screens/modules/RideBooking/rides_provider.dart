@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 class Ride {
@@ -22,12 +23,25 @@ class Ride {
 
 class RideProvider with ChangeNotifier {
   List<Ride> rides = [];
-  int chooseRide = 0;
+  int chooseRide = -1;
   int visiblePage = 0;
   String rideid = '';
+  bool start = false;
+  Stream<QuerySnapshot<Map<String, dynamic>>>? snapshot;
 
   void setId(String id) {
     rideid = id;
+    notifyListeners();
+  }
+
+  void setSnapshot(Stream<QuerySnapshot<Map<String, dynamic>>> s) {
+    snapshot = s;
+    notifyListeners();
+  }
+
+  void cancellSnapshot() {
+    snapshot!.listen((event) {}).cancel();
+    snapshot = null;
     notifyListeners();
   }
 
@@ -38,6 +52,7 @@ class RideProvider with ChangeNotifier {
 
   selectRide(int index) {
     chooseRide = index;
+    print(index);
     notifyListeners();
   }
 
@@ -63,10 +78,12 @@ class Driver {
   int ridesCompleted;
   bool verified;
   String img;
+  String uid;
   Driver(
       {this.name = '',
       this.rating = 0.0,
       this.verified = false,
       this.ridesCompleted = 0,
-      this.img = ''});
+      this.img = '',
+      this.uid = ''});
 }

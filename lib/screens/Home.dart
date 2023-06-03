@@ -29,14 +29,18 @@ class _HomeState extends State<Home> {
         backgroundColor: AppSettings.mainColor,
         elevation: 0,
         toolbarHeight: kToolbarHeight,
-        title: SizedBox(
-          height: kToolbarHeight,
-          child: Image.asset(
-            "assets/logo.png",
-            fit: BoxFit.contain,
-            color: Colors.white,
-          ),
+        title: const Text(
+          "Womanista",
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        // SizedBox(
+        //   height: kToolbarHeight,
+        //   child: Image.asset(
+        //     "assets/logo.png",
+        //     fit: BoxFit.contain,
+        //     color: Colors.white,
+        //   ),
+        // ),
         centerTitle: true,
         actions: [
           IconButton(

@@ -107,13 +107,28 @@ class _RegistrationrequestPageState extends State<RegistrationrequestPage> {
                         FirebaseFirestore.instance
                             .collection("DriverRegistration")
                             .doc(widget.id)
-                            .delete(),
-                        FirebaseFirestore.instance
-                            .collection("Drivers")
-                            .doc(widget.id)
-                            .set({
-                          'email': widget.id,
-                          'status': "approved",
+                            .get()
+                            .then((value) async {
+                          await FirebaseFirestore.instance
+                              .collection("Drivers")
+                              .doc(widget.id)
+                              .set({
+                            'email': widget.id,
+                            'status': "approved",
+                            'Full Name': value.data()!['Full Name'],
+                            'cnic': value.data()!['cnic'],
+                            'Vehicle License': value.data()!['Vehicle License'],
+                            'CNIC front': value.data()!['CNIC front'],
+                            'CNIC Back': value.data()!['CNIC Back'],
+                            'Licnese front': value.data()!['Licnese front'],
+                            'Licnese Back': value.data()!['Licnese Back'],
+                            'Vehicle Image': value.data()!['Vehicle Image'],
+                          }).then((value) async {
+                            await FirebaseFirestore.instance
+                                .collection("DriverRegistration")
+                                .doc(widget.id)
+                                .delete();
+                          });
                         }),
                       ]).then((value) {
                         Navigator.of(context).pop();

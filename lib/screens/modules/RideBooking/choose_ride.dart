@@ -25,8 +25,9 @@ class Chooseride extends StatefulWidget {
 
 class _ChooserideState extends State<Chooseride> {
   Location location = Location();
-  bool isDriverMode = false;
-  bool start = false;
+
+  bool destinationPicked = false;
+
   List<Ride> testRides = [
     Ride(
       carName: 'this car',
@@ -72,6 +73,20 @@ class _ChooserideState extends State<Chooseride> {
     ),
   ];
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchAvailableRides();
+  }
+
+  fetchAvailableRides() {
+    context.read<RideProvider>().setSnapshot(FirebaseFirestore.instance
+        .collection("Drivers")
+        .where("available", isEqualTo: true)
+        .snapshots());
+  }
+
   void alertCall(String text) {
     showDialog(
         context: context,
@@ -95,8 +110,32 @@ class _ChooserideState extends State<Chooseride> {
   }
 
   Widget startButton(BuildContext context) {
+    if (AppSettings.isDriverMode) {
+      return ElevatedButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const RideRequests(),
+            ),
+          );
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppSettings.mainColor,
+        ),
+        child: const Text("Available Rides"),
+      );
+    }
     return ElevatedButton(
       onPressed: () {
+        log("destinationPicked: $destinationPicked");
+        // if (!destinationPicked) {
+        //   ScaffoldMessenger.of(context).showSnackBar(
+        //     const SnackBar(
+        //       content: Text("Pick Destination Location"),
+        //     ),
+        //   );
+        //   return;
+        // }
         FirebaseFirestore.instance.collection("Rides").add({
           'pickup location': {
             'name': Provider.of<PickupLocation>(context, listen: false).name,
@@ -110,9 +149,10 @@ class _ChooserideState extends State<Chooseride> {
             'lng':
                 Provider.of<DestinationLocation>(context, listen: false).long,
           },
+          'ride status': 'pending',
         }).then((value) {
-          context.read<RideProvider>().rideid = value.id;
-          start = true;
+          context.read<RideProvider>().setId(value.id);
+          context.read<RideProvider>().start = true;
           setState(() {});
         });
       },
@@ -134,9 +174,11 @@ class _ChooserideState extends State<Chooseride> {
       child: Column(
         children: [
           appBar(context),
-          locationpick(context, screenSize),
+          if (!AppSettings.isDriverMode) locationpick(context, screenSize),
           const Spacer(),
-          start ? availableRides(context, screenSize) : startButton(context),
+          context.read<RideProvider>().start
+              ? availableRides(context, screenSize)
+              : startButton(context),
         ],
       ),
     );
@@ -153,7 +195,7 @@ class _ChooserideState extends State<Chooseride> {
             icon: const Icon(Icons.arrow_back),
           ),
           Text(
-            "Book a Ride",
+            AppSettings.isDriverMode ? "Get a Ride" : "Book a Ride",
             style: AppSettings.textStyle(size: 20),
           ),
           const Spacer(),
@@ -162,8 +204,10 @@ class _ChooserideState extends State<Chooseride> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Switch(
-                value: isDriverMode,
+                value: AppSettings.isDriverMode,
                 onChanged: (v) async {
+                  context.read<RideProvider>().resetPage();
+                  context.read<RideProvider>().start = false;
                   FirebaseFirestore.instance
                       .collection("Users")
                       .doc(FirebaseAuth.instance.currentUser!.email)
@@ -177,13 +221,21 @@ class _ChooserideState extends State<Chooseride> {
                           };
                       if (data["Driver"]) {
                         if (data["Driver Application"] == "Approved") {
-                          isDriverMode = v;
+                          AppSettings.isDriverMode = v;
                           setState(() {});
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const RideRequests(),
-                            ),
-                          );
+                          var email = FirebaseAuth.instance.currentUser?.email;
+                          FirebaseFirestore.instance
+                              .collection("Drivers")
+                              .doc(email)
+                              .update({
+                            "available": v,
+                            'uid': FirebaseAuth.instance.currentUser!.uid,
+                          });
+                          // Navigator.of(context).push(
+                          //   MaterialPageRoute(
+                          //     builder: (context) => const RideRequests(),
+                          //   ),
+                          // );
                         } else {
                           alertCall("Chack your Driver Application status");
                         }
@@ -367,11 +419,13 @@ class _ChooserideState extends State<Chooseride> {
                           result.description, latlong["lat"], latlong['lng']);
                       // GoogleMapController controller =
                       //     await widget.controller.future;
+                      destinationPicked = true;
+                      log("destinationPicked: $destinationPicked");
                       context
                           .read<AppMap>()
                           .moveMap(latlong["lat"], latlong['lng']);
                       final marker = Marker(
-                        markerId: const MarkerId("current"),
+                        markerId: const MarkerId("Destination"),
                         infoWindow: const InfoWindow(
                           title: "Destination",
                         ),
@@ -414,77 +468,121 @@ class _ChooserideState extends State<Chooseride> {
             ),
             Expanded(
               child: Center(
-                child: rideProvider.rides.isEmpty
+                child: rideProvider.snapshot == null
                     ? Text(
                         'Finding nearby rides...',
                         style: AppSettings.textStyle(textColor: Colors.black54),
                       )
-                    : ListView.builder(
-                        itemCount: rideProvider.rides.length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          Color color =
-                              Provider.of<RideProvider>(context).chooseRide !=
+                    : StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                        stream: rideProvider.snapshot,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                                  ConnectionState.waiting ||
+                              snapshot.data!.docs.isEmpty) {
+                            return Center(
+                              child: Text(
+                                'Finding nearby rides...',
+                                style: AppSettings.textStyle(
+                                    textColor: Colors.black54),
+                              ),
+                            );
+                          }
+                          if (snapshot.hasError) {
+                            return Center(
+                              child: Text(
+                                'Error Occured Try again',
+                                style: AppSettings.textStyle(
+                                    textColor: Colors.black54),
+                              ),
+                            );
+                          }
+                          rideProvider.rides = [];
+                          log("asas: ${snapshot.data!.docs.length}");
+
+                          for (var element in snapshot.data!.docs) {
+                            var data = element.data();
+                            rideProvider.add(Ride(
+                              carName: data['cnic'],
+                              capacity: 2,
+                              carNumber: data['Vehicle License'],
+                              driver: Driver(
+                                  uid: data['uid'],
+                                  name: data['Full Name'],
+                                  rating: 4.5,
+                                  ridesCompleted: 10,
+                                  verified: data['status'] == "approved"),
+                              price: 530,
+                              img: data['Vehicle Image'],
+                            ));
+                          }
+                          return ListView.builder(
+                            itemCount: rideProvider.rides.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              Color color = Provider.of<RideProvider>(context)
+                                          .chooseRide !=
                                       index
                                   ? Colors.black
                                   : Colors.white;
-                          return InkWell(
-                            onTap: () {
-                              rideProvider.selectRide(index);
-                              print(rideProvider.chooseRide);
-                            },
-                            child: Card(
-                              color: Provider.of<RideProvider>(context)
-                                          .chooseRide ==
-                                      index
-                                  ? AppSettings.mainColorLignt
-                                  : Colors.white,
-                              child: SizedBox(
-                                width: screenSize.width * 0.45,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      rideProvider.rides[index].carName,
-                                      style: AppSettings.textStyle(
-                                        weight: FontWeight.bold,
-                                        textColor: color,
-                                      ),
+                              return InkWell(
+                                onTap: () {
+                                  rideProvider.selectRide(index);
+                                  print(rideProvider.chooseRide);
+                                },
+                                child: Card(
+                                  color: Provider.of<RideProvider>(context)
+                                              .chooseRide ==
+                                          index
+                                      ? AppSettings.mainColorLignt
+                                      : Colors.white,
+                                  child: SizedBox(
+                                    width: screenSize.width * 0.45,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          rideProvider.rides[index].carName,
+                                          style: AppSettings.textStyle(
+                                            weight: FontWeight.bold,
+                                            textColor: color,
+                                          ),
+                                        ),
+                                        Text(
+                                          rideProvider.rides[index].carNumber,
+                                          style: AppSettings.textStyle(
+                                            size: 14,
+                                            textColor: color,
+                                          ),
+                                        ),
+                                        Text(
+                                          "${rideProvider.rides[index].capacity} person can ride",
+                                          style: AppSettings.textStyle(
+                                            size: 12,
+                                            textColor: color,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: screenSize.height * 0.1,
+                                          child: Image.network(
+                                            rideProvider.rides[index].img,
+                                            fit: BoxFit.scaleDown,
+                                          ),
+                                        ),
+                                        Text(
+                                          "Rs. ${rideProvider.rides[index].price}",
+                                          style: AppSettings.textStyle(
+                                            textColor: color,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    Text(
-                                      rideProvider.rides[index].carNumber,
-                                      style: AppSettings.textStyle(
-                                        size: 14,
-                                        textColor: color,
-                                      ),
-                                    ),
-                                    Text(
-                                      "${rideProvider.rides[index].capacity} person can ride",
-                                      style: AppSettings.textStyle(
-                                        size: 12,
-                                        textColor: color,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: screenSize.height * 0.1,
-                                      child: Image.asset(
-                                        "assets/${rideProvider.rides[index].img}",
-                                        fit: BoxFit.scaleDown,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Rs. ${rideProvider.rides[index].price}",
-                                      style: AppSettings.textStyle(
-                                        textColor: color,
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            },
                           );
-                        },
-                      ),
+                        }),
               ),
             ),
             Align(

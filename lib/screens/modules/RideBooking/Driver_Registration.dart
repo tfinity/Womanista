@@ -25,6 +25,7 @@ class _DriverRegistrationState extends State<DriverRegistration> {
   XFile? licenseBack;
   XFile? cnicFront;
   XFile? cnicBack;
+  XFile? vehicleImage;
   final ImagePicker picker = ImagePicker();
   @override
   void initState() {
@@ -290,6 +291,44 @@ class _DriverRegistrationState extends State<DriverRegistration> {
                           ],
                         ),
                       ),
+                vehicleImage == null
+                    ? ElevatedButton(
+                        onPressed: () async {
+                          vehicleImage = await picker.pickImage(
+                              source: ImageSource.camera);
+                          setState(() {});
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppSettings.mainColor,
+                        ),
+                        child: const Text(
+                          "Vehicle Image",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      )
+                    : SizedBox(
+                        width: size.width * 0.9,
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: size.width * 0.7,
+                              child: Text(
+                                vehicleImage!.name,
+                                overflow: TextOverflow.fade,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                licenseBack = null;
+                                setState(() {});
+                              },
+                              child: const Text(
+                                "change",
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                 const SizedBox(
                   height: 50,
                 ),
@@ -302,7 +341,8 @@ class _DriverRegistrationState extends State<DriverRegistration> {
                       if (cnicBack == null ||
                           cnicFront == null ||
                           licenseBack == null ||
-                          licenseFront == null) {
+                          licenseFront == null ||
+                          vehicleImage == null) {
                         showDialog(
                           context: context,
                           builder: (ctx) {
@@ -444,6 +484,11 @@ class _DriverRegistrationState extends State<DriverRegistration> {
             .putFile(
               File(cnicFront!.path),
             ),
+        storageRef
+            .child("Verification/Vehicles/${user.email}_vehicle_image.png")
+            .putFile(
+              File(vehicleImage!.path),
+            ),
       ]).then((value) async {
         FirebaseFirestore.instance
             .collection("DriverRegistration")
@@ -457,6 +502,7 @@ class _DriverRegistrationState extends State<DriverRegistration> {
           'CNIC Back': await value[1].ref.getDownloadURL(),
           'Licnese front': await value[2].ref.getDownloadURL(),
           'Licnese Back': await value[3].ref.getDownloadURL(),
+          'Vehicle Image': await value[4].ref.getDownloadURL(),
         });
       });
     } catch (e) {

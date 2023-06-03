@@ -26,6 +26,18 @@ class AppMap with ChangeNotifier {
     );
   }
 
+  updateMarker(String id, double lat, double lng) {
+    markers[id] = Marker(
+        markerId: MarkerId(id),
+        infoWindow: markers[id]!.infoWindow,
+        position: LatLng(lat, lng));
+    moveMap(lat, lng);
+  }
+
+  void remove() async {
+    (await controller.future).dispose();
+  }
+
   drawPath() {
     // Polyline(polylineId: PolylineId("direction"),)
   }

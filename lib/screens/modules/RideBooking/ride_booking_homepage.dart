@@ -7,6 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:womanista/screens/modules/RideBooking/choose_ride.dart';
 import 'package:womanista/screens/modules/RideBooking/map_provider.dart';
+import 'package:womanista/screens/modules/RideBooking/place_service.dart';
 import 'package:womanista/screens/modules/RideBooking/ride_confirmed.dart';
 import 'package:womanista/screens/modules/RideBooking/ride_in_progress.dart';
 import 'package:womanista/screens/modules/RideBooking/rides_provider.dart';
@@ -40,6 +41,13 @@ class _RideBookingHomeState extends State<RideBookingHome> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    context.read<AppMap>().remove();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
@@ -61,6 +69,8 @@ class _RideBookingHomeState extends State<RideBookingHome> {
                   log("${currentLocation.heading}");
                   log("${currentLocation.latitude}");
                   log("${currentLocation.longitude}");
+                  context.read<PickupLocation>().adddata("Your Location",
+                      currentLocation.latitude!, currentLocation.longitude!);
                   // GoogleMapController controller =
                   //     await widget.controller.future;
                   final marker = Marker(
